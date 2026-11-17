@@ -22,7 +22,7 @@
   <tbody>
     {% for ct in contacts %}
     <tr>
-      <td>{% if ct.linkedin_url %}<a href="{{ ct.linkedin_url }}" target="_blank">{{ ct.contact_name }}</a>{% else %}{{ ct.contact_name }}{% endif %}</td>
+      <td><a href="{{ url_for('contact_detail', contact_id=ct.contact_id) }}">{{ ct.contact_name }}</a></td>
       <td>{{ ct.company_name }}</td>
       <td>{{ ct.title or '' }}</td>
       <td>{% if ct.email %}<a href="mailto:{{ ct.email }}">{{ ct.email }}</a>{% endif %}</td>

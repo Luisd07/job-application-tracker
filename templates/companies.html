@@ -21,7 +21,7 @@
   <tbody>
     {% for c in companies %}
     <tr>
-      <td>{{ c.company_name }}</td>
+      <td><a href="{{ url_for('company_detail', company_id=c.company_id) }}">{{ c.company_name }}</a></td>
       <td>{{ c.industry or '' }}</td>
       <td>{{ c.city or '' }}{% if c.state %}, {{ c.state }}{% endif %}</td>
       <td>{% if c.website %}<a href="{{ c.website }}" target="_blank">Link</a>{% endif %}</td>

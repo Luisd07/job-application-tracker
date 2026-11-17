@@ -23,7 +23,7 @@
   <tbody>
     {% for j in jobs %}
     <tr>
-      <td>{% if j.job_url %}<a href="{{ j.job_url }}" target="_blank">{{ j.job_title }}</a>{% else %}{{ j.job_title }}{% endif %}</td>
+      <td><a href="{{ url_for('job_detail', job_id=j.job_id) }}">{{ j.job_title }}</a></td>
       <td>{{ j.company_name }}</td>
       <td>{{ j.job_type }}</td>
       <td>

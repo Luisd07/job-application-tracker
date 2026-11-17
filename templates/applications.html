@@ -26,7 +26,7 @@
   <tbody>
     {% for a in applications %}
     <tr>
-      <td>{{ a.job_title }} at {{ a.company_name }}</td>
+      <td><a href="{{ url_for('application_detail', application_id=a.application_id) }}">{{ a.job_title }} at {{ a.company_name }}</a></td>
       <td>{{ a.application_date }}</td>
       <td><span class="badge text-bg-{{ colors[a.status] }}">{{ a.status }}</span></td>
       <td>{{ a.resume_version or '' }}</td>
