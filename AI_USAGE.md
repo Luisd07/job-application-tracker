@@ -2,30 +2,35 @@
 
 ## Tools Used
 
-- **Claude Code (Sonnet 5.5, `claude-sonnet-5-5`)** by Anthropic: used to generate the project boilerplate (framework setup and file structure only).
-- **Claude Code (Opus 5.5, `claude-opus-5-5`)** by Anthropic: used to review my schema and companies routes, fix the errors it found, and write the CRUD routes for jobs, applications, and contacts.
+- **Claude Code (Sonnet 5.5)**: set up the project boilerplate.
+- **Claude Code (Opus 5.5)**: everything after the boilerplate (reviews, bug fixes, routes, sample data, templates).
 
-## Key Prompts
+## What I Used AI For
 
-- Asked for only the boilerplate of a Flask + MySQL Job Application Tracker: app skeleton with one route per page, a database connection helper, Jinja2 templates extending a Bootstrap base layout, an empty stylesheet, a minimal `schema.sql`, `.env.example`, and `.gitignore`. Explicitly asked for TODO stubs instead of CRUD, SQL, dashboard stats, or the job-matching algorithm, and for `requirements.txt` to be exported with uv rather than hand-written.
-- "Implement the CRUD routes for the rest of app.py. Follow similar structure to the previously written companies CRUD routes." I wrote the companies routes myself first so the AI had a pattern to copy.
+1. **Boilerplate.** I asked for just the project skeleton: a Flask app with one route per page, a database connection helper, Bootstrap templates, and an empty `schema.sql`. I told it to leave TODOs instead of writing any real features.
+
+2. **Planning.** I asked it to walk me through the project spec so I knew what to work on first.
+
+3. **Reviewing my schema.** I wrote `schema.sql` from the spec and asked it to review it ("review schema i wrote"). It found missing semicolons, foreign keys written in SQL Server syntax instead of MySQL, and that I had used `'Interviewing'` where the spec says `'Interview'`. I asked it to fix those.
+
+4. **The rest of the CRUD routes.** I asked it to "implement the crud routes for the rest of app.py" following the same structure as my companies routes. It wrote the jobs, applications, and contacts routes, and pointed out that my `company_edit` and `company_delete` routes used `WHERE id = %s` when the column is `company_id`.
+
+5. **Matching the routes to the schema.** I asked it to "make sure the crud routes match my sql schema." It added checks so text that is too long for a column, or a salary too big for an INT, shows an error message instead of crashing.
+
+6. **Templates.** I wrote `companies.html` and asked it to format it. That turned up four bugs (a duplicated `{% else %}`/`{% endfor %}` block, a stray quote in a class name, a typo in `company_name`, and a missing table header). Since the other list pages are basically the same, I had it make `jobs.html`, `applications.html`, and `contacts.html` from my `companies.html`.
 
 ## What Worked Well
 
-- `app.py` with a Flask app, `.env` loading, and six routes that just render templates.
-- `database.py` with a single `get_connection()` helper using environment variables.
-- `base.html` with a Bootstrap 5 navbar, flash message area, and content block; the other six templates extend it with a heading and a TODO.
-- Empty `style.css`, minimal `schema.sql`, `.env.example`, and `.gitignore`.
-- CRUD routes for jobs, applications, and contacts (list/add/edit/delete) that follow the same structure as my companies routes:
-  - List pages use JOINs so they show company and job names instead of IDs.
-  - Server-side validation: required fields, ENUM values for job type and status, valid dates, whole-number salaries with min ≤ max, and checking that the selected company or job exists.
-  - The JSON columns are converted between form text and JSON (`requirements` is typed as "Python, SQL, Flask" and stored as an array; the interview notes are stored as a key inside `interview_data`).
-- It caught a bug in my own `company_edit` and `company_delete` routes: they used `WHERE id = %s`, but the column is `company_id`.
+- Reviews caught bugs I didn't see, like the `WHERE id` mistake and the typo that left a column blank.
+- Writing one table myself and having AI copy the pattern kept the code consistent with how I wrote it.
+- It tested the pages against my actual database to check each column showed data.
 
-## What I Modified
+## What I Changed
 
-_TODO: fill in after I make my changes._
+- I kept my schema the way the project spec describes it instead of switching to the older assignment tables.
+- I removed the default `SECRET_KEY` fallback in `app.py`, so the key has to come from `.env`.
+- I ran a formatter on `app.py`.
 
 ## Lessons Learned
 
-Using AI for generic boilerplate code greatly increases effectiveness and speed. However that boilerplate may not be fully tailored for your use case, so checking it over is greatly recommended.
+Using AI for generic boilerplate greatly speeds things up, but that boilerplate isn't fully tailored to your project, so it's worth checking it over. Writing one piece myself first and asking AI to follow it gave much better results than asking it to write everything from scratch.

@@ -3,6 +3,41 @@
 {% block title %}Companies{% endblock %}
 
 {% block content %}
-<h1>Companies</h1>
-{# TODO: list companies and add/edit/delete forms #}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1>Companies</h1>
+  <a href="{{ url_for('company_add') }}" class="btn btn-primary">Add Company</a>
+</div>
+
+<table class="table table-striped align-middle">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Industry</th>
+      <th>Location</th>
+      <th>Website</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for c in companies %}
+    <tr>
+      <td>{{ c.company_name }}</td>
+      <td>{{ c.industry or '' }}</td>
+      <td>{{ c.city or '' }}{% if c.state %}, {{ c.state }}{% endif %}</td>
+      <td>{% if c.website %}<a href="{{ c.website }}" target="_blank">Link</a>{% endif %}</td>
+      <td class="text-end">
+        <a href="{{ url_for('company_edit', company_id=c.company_id) }}" class="btn btn-sm btn-outline-secondary">Edit</a>
+        <form method="post" action="{{ url_for('company_delete', company_id=c.company_id) }}" class="d-inline"
+              onsubmit="return confirm('Delete this company and all its jobs, applications, and contacts?');">
+          <button class="btn btn-sm btn-outline-danger">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+    <tr>
+      <td colspan="5" class="text-muted">No companies yet.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% endblock %}

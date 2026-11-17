@@ -3,6 +3,48 @@
 {% block title %}Jobs{% endblock %}
 
 {% block content %}
-<h1>Jobs</h1>
-{# TODO: list jobs and add/edit/delete forms #}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1>Jobs</h1>
+  <a href="{{ url_for('job_add') }}" class="btn btn-primary">Add Job</a>
+</div>
+
+<table class="table table-striped align-middle">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Company</th>
+      <th>Type</th>
+      <th>Salary</th>
+      <th>Posted</th>
+      <th>Skills</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for j in jobs %}
+    <tr>
+      <td>{% if j.job_url %}<a href="{{ j.job_url }}" target="_blank">{{ j.job_title }}</a>{% else %}{{ j.job_title }}{% endif %}</td>
+      <td>{{ j.company_name }}</td>
+      <td>{{ j.job_type }}</td>
+      <td>
+        {% if j.salary_min is not none %}${{ '{:,}'.format(j.salary_min) }}{% endif %}
+        {% if j.salary_max is not none %} – ${{ '{:,}'.format(j.salary_max) }}{% endif %}
+      </td>
+      <td>{{ j.date_posted or '' }}</td>
+      <td>{{ j.requirements|join(', ') }}</td>
+      <td class="text-end">
+        <a href="{{ url_for('job_edit', job_id=j.job_id) }}" class="btn btn-sm btn-outline-secondary">Edit</a>
+        <form method="post" action="{{ url_for('job_delete', job_id=j.job_id) }}" class="d-inline"
+              onsubmit="return confirm('Delete this job and its applications?');">
+          <button class="btn btn-sm btn-outline-danger">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+    <tr>
+      <td colspan="7" class="text-muted">No jobs yet.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% endblock %}
