@@ -21,6 +21,8 @@
 
 7. **Form templates.** I wrote `company_form.html` and asked it to copy my style for `contact_form.html`, `job_form.html`, and `application_form.html`. These needed a few things my form didn't have: dropdowns for picking a company or job, dropdowns for job type and status, date and number fields, and a checkbox for the cover letter. It checked that the edit pages load with the saved values and that bad input shows an error without losing what was typed.
 
+8. **Dashboard and code review.** I added the dashboard queries from its suggestion to `app.py`, but the indentation broke and the app wouldn't start, so I asked it to fix that. It then walked me through the dashboard template (count cards, applications by status, recent applications), along with matching status colors on the applications page. After that I asked it to review `applications.html`, `dashboard.html`, and `app.py`. It didn't find anything broken, but it pointed out that lists with ties (like two statuses with the same count) don't have a fixed order, that duplicate skills could be saved for a job, that deleting a record that's already gone still says it was deleted, and that the status colors are defined in two templates.
+
 ## What Worked Well
 
 - Reviews caught bugs I didn't see, like the `WHERE id` mistake and the typo that left a column blank.

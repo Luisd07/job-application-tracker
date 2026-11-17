@@ -3,6 +3,70 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<h1>Dashboard</h1>
-{# TODO: show dashboard stats #}
+<h1 class="mb-4">Dashboard</h1>
+
+{% set cards = [
+    ('Companies', counts.companies, 'companies'),
+    ('Jobs', counts.jobs, 'jobs'),
+    ('Applications', counts.applications, 'applications'),
+    ('Contacts', counts.contacts, 'contacts'),
+] %}
+<div class="row g-3 mb-4">
+    {% for label, number, endpoint in cards %}
+    <div class="col-6 col-md-3">
+        <a href="{{ url_for(endpoint) }}" class="card text-decoration-none h-100">
+            <div class="card-body">
+                <div class="text-muted">{{ label }}</div>
+                <div class="display-6">{{ number }}</div>
+            </div>
+        </a>
+    </div>
+    {% endfor %}
+</div>
+
+{% set colors = {'Applied': 'primary', 'Screening': 'info', 'Interview': 'warning',
+                 'Offer': 'success', 'Rejected': 'danger', 'Withdrawn': 'secondary'} %}
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <h2 class="h5">Applications by status</h2>
+        <ul class="list-group">
+            {% for row in by_status %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span class="badge text-bg-{{ colors[row.status] }}">{{ row.status }}</span>
+                {{ row.count }}
+            </li>
+            {% else %}
+            <li class="list-group-item text-muted">No applications yet.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="col-md-8">
+        <h2 class="h5">Recent applications</h2>
+        <table class="table table-sm align-middle">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Job</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in recent %}
+                <tr>
+                    <td>{{ a.application_date }}</td>
+                    <td>{{ a.job_title }} at {{ a.company_name }}</td>
+                    <td><span class="badge text-bg-{{ colors[a.status] }}">{{ a.status }}</span></td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="3" class="text-muted">No applications yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ url_for('applications') }}">View all applications →</a>
+    </div>
+</div>
 {% endblock %}

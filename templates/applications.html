@@ -8,6 +8,9 @@
   <a href="{{ url_for('application_add') }}" class="btn btn-primary">Add Application</a>
 </div>
 
+{% set colors = {'Applied': 'primary', 'Screening': 'info', 'Interview': 'warning',
+                 'Offer': 'success', 'Rejected': 'danger', 'Withdrawn': 'secondary'} %}
+
 <table class="table table-striped align-middle">
   <thead>
     <tr>
@@ -25,7 +28,7 @@
     <tr>
       <td>{{ a.job_title }} at {{ a.company_name }}</td>
       <td>{{ a.application_date }}</td>
-      <td><span class="badge text-bg-secondary">{{ a.status }}</span></td>
+      <td><span class="badge text-bg-{{ colors[a.status] }}">{{ a.status }}</span></td>
       <td>{{ a.resume_version or '' }}</td>
       <td>{{ 'Yes' if a.cover_letter_sent else 'No' }}</td>
       <td>{{ a.interview_data.notes or '' }}</td>

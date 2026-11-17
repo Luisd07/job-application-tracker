@@ -114,8 +114,24 @@ def job_choices():
 
 @app.route("/")
 def dashboard():
-    # TODO: query the database for dashboard stats and pass them to the template
-    return render_template("dashboard.html")
+    counts = fetch_one(
+        "SELECT (SELECT COUNT(*) FROM companies) AS companies, "
+        "(SELECT COUNT(*) FROM jobs) AS jobs, "
+        "(SELECT COUNT(*) FROM applications) AS applications, "
+        "(SELECT COUNT(*) FROM contacts) AS contacts"
+    )
+    by_status = fetch_all(
+        "SELECT status, COUNT(*) AS count FROM applications "
+        "GROUP BY status ORDER BY count DESC"
+    )
+    recent = fetch_all(
+        "SELECT a.application_date, a.status, j.job_title, c.company_name FROM applications a "
+        "JOIN jobs j ON a.job_id = j.job_id JOIN companies c ON j.company_id = c.company_id "
+        "ORDER BY a.application_date DESC LIMIT 5"
+    )
+    return render_template(
+        "dashboard.html", counts=counts, by_status=by_status, recent=recent
+    )
 
 
 @app.route("/companies")
