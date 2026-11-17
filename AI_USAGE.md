@@ -5,6 +5,15 @@
 - **Claude Code (Sonnet 5.5)**: set up the project boilerplate.
 - **Claude Code (Opus 5.5)**: everything after the boilerplate (reviews, bug fixes, routes, sample data, templates).
 
+## Key Prompts
+
+- "review schema i wrote"
+- "implement the crud routes for the rest of app.py"
+- "make sure the crud routes match my sql schema"
+- Format my `companies.html` and use it to make the other three list pages.
+- Copy my `company_form.html` style for the contact, job and application forms.
+- For Job Match: "list every job ranked by the percentage of that job's required skills I have, along with the skills I'm missing."
+
 ## What I Used AI For
 
 1. **Boilerplate.** I asked for just the project skeleton: a Flask app with one route per page, a database connection helper, Bootstrap templates, and an empty `schema.sql`. I told it to leave TODOs instead of writing any real features.
