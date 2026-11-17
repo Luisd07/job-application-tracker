@@ -1,6 +1,7 @@
 """Database connection helper."""
 
 import os
+from typing import Any, cast
 
 import mysql.connector
 from dotenv import load_dotenv
@@ -23,7 +24,7 @@ def get_connection():
     )
 
 
-def fetch_all(sql, params=()):
+def fetch_all(sql, params=()) -> list[dict[str, Any]]:
     """Fetch all rows from the database for a given query.
 
     Args:
@@ -33,12 +34,13 @@ def fetch_all(sql, params=()):
     try:
         cur = conn.cursor(dictionary=True)
         cur.execute(sql, params)
-        return cur.fetchall()
+        # dictionary=True makes each row a dict; cast tells the type checker so.
+        return cast(list[dict[str, Any]], cur.fetchall())
     finally:
         conn.close()
 
 
-def fetch_one(sql, params=()):
+def fetch_one(sql, params=()) -> dict[str, Any] | None:
     """Fetch a single row from the database for a given query.
 
     Args:
