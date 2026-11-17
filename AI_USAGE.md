@@ -19,6 +19,8 @@
 
 6. **Templates.** I wrote `companies.html` and asked it to format it. That turned up four bugs (a duplicated `{% else %}`/`{% endfor %}` block, a stray quote in a class name, a typo in `company_name`, and a missing table header). Since the other list pages are basically the same, I had it make `jobs.html`, `applications.html`, and `contacts.html` from my `companies.html`.
 
+7. **Form templates.** I wrote `company_form.html` and asked it to copy my style for `contact_form.html`, `job_form.html`, and `application_form.html`. These needed a few things my form didn't have: dropdowns for picking a company or job, dropdowns for job type and status, date and number fields, and a checkbox for the cover letter. It checked that the edit pages load with the saved values and that bad input shows an error without losing what was typed.
+
 ## What Worked Well
 
 - Reviews caught bugs I didn't see, like the `WHERE id` mistake and the typo that left a column blank.

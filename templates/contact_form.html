@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% set editing = request.endpoint == 'contact_edit' %}
+
+{% block title %}{{ 'Edit' if editing else 'Add' }} Contact{% endblock %}
+
+{% block content %}
+<h1>{{ 'Edit' if editing else 'Add' }} Contact</h1>
+
+<form method="post" class="row g-3" style="max-width: 720px">
+    <div class="col-12">
+        <label class="form-label" for="company_id">Company *</label>
+        <select class="form-select" id="company_id" name="company_id" required>
+            <option value="">Choose a company…</option>
+            {% for c in companies %}
+            <option value="{{ c.company_id }}" {% if contact.company_id|string == c.company_id|string %}selected{% endif %}>
+                {{ c.company_name }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label" for="contact_name">Name *</label>
+        <input class="form-control" id="contact_name" name="contact_name" required maxlength="100"
+            value="{{ contact.contact_name or '' }}">
+    </div>
+    <div class="col-md-6">
+        <label class="form-label" for="title">Title</label>
+        <input class="form-control" id="title" name="title" maxlength="100" value="{{ contact.title or '' }}">
+    </div>
+    <div class="col-md-6">
+        <label class="form-label" for="email">Email</label>
+        <input class="form-control" id="email" name="email" type="email" maxlength="100"
+            value="{{ contact.email or '' }}">
+    </div>
+    <div class="col-md-6">
+        <label class="form-label" for="phone">Phone</label>
+        <input class="form-control" id="phone" name="phone" type="tel" maxlength="20" value="{{ contact.phone or '' }}">
+    </div>
+    <div class="col-12">
+        <label class="form-label" for="linkedin_url">LinkedIn URL</label>
+        <input class="form-control" id="linkedin_url" name="linkedin_url" type="url" maxlength="200"
+            value="{{ contact.linkedin_url or '' }}">
+    </div>
+    <div class="col-12">
+        <label class="form-label" for="notes">Notes</label>
+        <textarea class="form-control" id="notes" name="notes" rows="3">{{ contact.notes or '' }}</textarea>
+    </div>
+    <div class="col-12">
+        <button class="btn btn-primary">Save</button>
+        <a href="{{ url_for('contacts') }}" class="btn btn-link">Cancel</a>
+    </div>
+</form>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% set editing = request.endpoint == 'application_edit' %}
+
+{% block title %}{{ 'Edit' if editing else 'Add' }} Application{% endblock %}
+
+{% block content %}
+<h1>{{ 'Edit' if editing else 'Add' }} Application</h1>
+
+<form method="post" class="row g-3" style="max-width: 720px">
+    <div class="col-12">
+        <label class="form-label" for="job_id">Job *</label>
+        <select class="form-select" id="job_id" name="job_id" required>
+            <option value="">Choose a job…</option>
+            {% for j in jobs %}
+            <option value="{{ j.job_id }}" {% if application.job_id|string == j.job_id|string %}selected{% endif %}>
+                {{ j.job_title }} at {{ j.company_name }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label" for="application_date">Application date *</label>
+        <input class="form-control" id="application_date" name="application_date" type="date" required
+            value="{{ application.application_date or '' }}">
+    </div>
+    <div class="col-md-6">
+        <label class="form-label" for="status">Status *</label>
+        <select class="form-select" id="status" name="status" required>
+            {% for s in statuses %}
+            <option value="{{ s }}" {% if application.status == s or (not application.status and s == 'Applied') %}selected{% endif %}>
+                {{ s }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label" for="resume_version">Resume version</label>
+        <input class="form-control" id="resume_version" name="resume_version" maxlength="50" placeholder="v2.1"
+            value="{{ application.resume_version or '' }}">
+    </div>
+    <div class="col-md-6 d-flex align-items-end">
+        <div class="form-check mb-2">
+            <input class="form-check-input" id="cover_letter_sent" name="cover_letter_sent" type="checkbox"
+                {% if application.cover_letter_sent %}checked{% endif %}>
+            <label class="form-check-label" for="cover_letter_sent">Cover letter sent</label>
+        </div>
+    </div>
+    <div class="col-12">
+        <label class="form-label" for="interview_notes">Interview notes</label>
+        <textarea class="form-control" id="interview_notes" name="interview_notes" rows="3">{{ application.interview_notes or '' }}</textarea>
+    </div>
+    <div class="col-12">
+        <button class="btn btn-primary">Save</button>
+        <a href="{{ url_for('applications') }}" class="btn btn-link">Cancel</a>
+    </div>
+</form>
+{% endblock %}
