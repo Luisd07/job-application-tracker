@@ -18,7 +18,7 @@ load_dotenv()
 app = Flask(__name__)
 
 # Flask needs a secret key to use flash messages (they are stored in the session).
-app.secret_key = os.getenv("SECRET_KEY", "dev-secret-change-me")
+app.secret_key = os.getenv("SECRET_KEY")
 
 # Allowed values for the ENUM columns in schema.sql.
 JOB_TYPES = ["Full-time", "Part-time", "Contract", "Internship"]
