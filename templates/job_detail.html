@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}{{ job.job_title }}{% endblock %}
+
+{% block content %}
+{% set colors = {'Applied': 'primary', 'Screening': 'info', 'Interview': 'warning',
+                 'Offer': 'success', 'Rejected': 'danger', 'Withdrawn': 'secondary'} %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>{{ job.job_title }}</h1>
+    <div>
+        <a href="{{ url_for('job_edit', job_id=job.job_id) }}" class="btn btn-outline-secondary">Edit</a>
+        <a href="{{ url_for('jobs') }}" class="btn btn-link">Back to jobs</a>
+    </div>
+</div>
+
+<dl class="row" style="max-width: 720px">
+    <dt class="col-sm-3">Company</dt>
+    <dd class="col-sm-9"><a href="{{ url_for('company_detail', company_id=job.company_id) }}">{{ job.company_name }}</a></dd>
+    <dt class="col-sm-3">Type</dt>
+    <dd class="col-sm-9">{{ job.job_type }}</dd>
+    <dt class="col-sm-3">Salary</dt>
+    <dd class="col-sm-9">
+        {% if job.salary_min is not none %}${{ '{:,}'.format(job.salary_min) }}{% endif %}
+        {% if job.salary_max is not none %} – ${{ '{:,}'.format(job.salary_max) }}{% endif %}
+        {% if job.salary_min is none and job.salary_max is none %}–{% endif %}
+    </dd>
+    <dt class="col-sm-3">Posted</dt>
+    <dd class="col-sm-9">{{ job.date_posted or '–' }}</dd>
+    <dt class="col-sm-3">Job posting</dt>
+    <dd class="col-sm-9">{% if job.job_url %}<a href="{{ job.job_url }}" target="_blank">{{ job.job_url }}</a>{% else %}–{% endif %}</dd>
+    <dt class="col-sm-3">Skills</dt>
+    <dd class="col-sm-9">
+        {% for skill in job.requirements %}
+        <span class="badge text-bg-light border">{{ skill }}</span>
+        {% else %}
+        –
+        {% endfor %}
+    </dd>
+</dl>
+
+<h2 class="h4 mt-4">Applications</h2>
+<table class="table table-striped align-middle">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for a in applications %}
+        <tr>
+            <td>{{ a.application_date }}</td>
+            <td><span class="badge text-bg-{{ colors[a.status] }}">{{ a.status }}</span></td>
+            <td class="text-end"><a href="{{ url_for('application_detail', application_id=a.application_id) }}">View</a></td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="3" class="text-muted">No applications for this job.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

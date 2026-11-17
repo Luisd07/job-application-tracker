@@ -140,6 +140,30 @@ def companies():
     return render_template("companies.html", companies=rows)
 
 
+@app.route("/companies/<int:company_id>")
+def company_detail(company_id):
+    company = fetch_one("SELECT * FROM companies WHERE company_id = %s", (company_id,))
+    if not company:
+        flash("Company not found.", "danger")
+        return redirect(url_for("companies"))
+    company_jobs = fetch_all(
+        "SELECT job_id, job_title, job_type, date_posted FROM jobs "
+        "WHERE company_id = %s ORDER BY date_posted DESC, job_title",
+        (company_id,),
+    )
+    company_contacts = fetch_all(
+        "SELECT contact_id, contact_name, title, email FROM contacts "
+        "WHERE company_id = %s ORDER BY contact_name",
+        (company_id,),
+    )
+    return render_template(
+        "company_detail.html",
+        company=company,
+        jobs=company_jobs,
+        contacts=company_contacts,
+    )
+
+
 @app.route("/companies/add", methods=["GET", "POST"])
 def company_add():
     if request.method == "POST":
@@ -275,6 +299,25 @@ def jobs():
     return render_template("jobs.html", jobs=rows)
 
 
+@app.route("/jobs/<int:job_id>")
+def job_detail(job_id):
+    job = fetch_one(
+        "SELECT j.*, c.company_name FROM jobs j "
+        "JOIN companies c ON j.company_id = c.company_id WHERE j.job_id = %s",
+        (job_id,),
+    )
+    if not job:
+        flash("Job not found.", "danger")
+        return redirect(url_for("jobs"))
+    job["requirements"] = load_json(job["requirements"]) or []
+    job_applications = fetch_all(
+        "SELECT application_id, application_date, status FROM applications "
+        "WHERE job_id = %s ORDER BY application_date DESC",
+        (job_id,),
+    )
+    return render_template("job_detail.html", job=job, applications=job_applications)
+
+
 @app.route("/jobs/add", methods=["GET", "POST"])
 def job_add():
     if request.method == "POST":
@@ -375,6 +418,22 @@ def applications():
     for row in rows:
         row["interview_data"] = load_json(row["interview_data"]) or {}
     return render_template("applications.html", applications=rows)
+
+
+@app.route("/applications/<int:application_id>")
+def application_detail(application_id):
+    application = fetch_one(
+        "SELECT a.*, j.job_title, c.company_id, c.company_name FROM applications a "
+        "JOIN jobs j ON a.job_id = j.job_id "
+        "JOIN companies c ON j.company_id = c.company_id "
+        "WHERE a.application_id = %s",
+        (application_id,),
+    )
+    if not application:
+        flash("Application not found.", "danger")
+        return redirect(url_for("applications"))
+    application["interview_data"] = load_json(application["interview_data"]) or {}
+    return render_template("application_detail.html", application=application)
 
 
 @app.route("/applications/add", methods=["GET", "POST"])
@@ -480,6 +539,19 @@ def contacts():
         "ORDER BY ct.contact_name"
     )
     return render_template("contacts.html", contacts=rows)
+
+
+@app.route("/contacts/<int:contact_id>")
+def contact_detail(contact_id):
+    contact = fetch_one(
+        "SELECT ct.*, c.company_name FROM contacts ct "
+        "JOIN companies c ON ct.company_id = c.company_id WHERE ct.contact_id = %s",
+        (contact_id,),
+    )
+    if not contact:
+        flash("Contact not found.", "danger")
+        return redirect(url_for("contacts"))
+    return render_template("contact_detail.html", contact=contact)
 
 
 @app.route("/contacts/add", methods=["GET", "POST"])

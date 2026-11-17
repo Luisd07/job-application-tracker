@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Application{% endblock %}
+
+{% block content %}
+{% set colors = {'Applied': 'primary', 'Screening': 'info', 'Interview': 'warning',
+                 'Offer': 'success', 'Rejected': 'danger', 'Withdrawn': 'secondary'} %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Application: {{ application.job_title }}</h1>
+    <div>
+        <a href="{{ url_for('application_edit', application_id=application.application_id) }}" class="btn btn-outline-secondary">Edit</a>
+        <a href="{{ url_for('applications') }}" class="btn btn-link">Back to applications</a>
+    </div>
+</div>
+
+<dl class="row" style="max-width: 720px">
+    <dt class="col-sm-3">Job</dt>
+    <dd class="col-sm-9"><a href="{{ url_for('job_detail', job_id=application.job_id) }}">{{ application.job_title }}</a></dd>
+    <dt class="col-sm-3">Company</dt>
+    <dd class="col-sm-9"><a href="{{ url_for('company_detail', company_id=application.company_id) }}">{{ application.company_name }}</a></dd>
+    <dt class="col-sm-3">Date applied</dt>
+    <dd class="col-sm-9">{{ application.application_date }}</dd>
+    <dt class="col-sm-3">Status</dt>
+    <dd class="col-sm-9"><span class="badge text-bg-{{ colors[application.status] }}">{{ application.status }}</span></dd>
+    <dt class="col-sm-3">Resume version</dt>
+    <dd class="col-sm-9">{{ application.resume_version or '–' }}</dd>
+    <dt class="col-sm-3">Cover letter sent</dt>
+    <dd class="col-sm-9">{{ 'Yes' if application.cover_letter_sent else 'No' }}</dd>
+</dl>
+
+<h2 class="h4 mt-4">Interview data</h2>
+{% if application.interview_data %}
+<dl class="row" style="max-width: 720px">
+    {% for key, value in application.interview_data.items() %}
+    <dt class="col-sm-3">{{ key.replace('_', ' ').capitalize() }}</dt>
+    <dd class="col-sm-9">{% if value is string or value is number %}{{ value }}{% elif value is mapping %}{% for k, v in value.items() %}{{ k }}: {{ v }}{% if not loop.last %}; {% endif %}{% endfor %}{% elif value is iterable %}{{ value|join(', ') }}{% else %}{{ value }}{% endif %}</dd>
+    {% endfor %}
+</dl>
+{% else %}
+<p class="text-muted">No interview data.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}{{ company.company_name }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>{{ company.company_name }}</h1>
+    <div>
+        <a href="{{ url_for('company_edit', company_id=company.company_id) }}" class="btn btn-outline-secondary">Edit</a>
+        <a href="{{ url_for('companies') }}" class="btn btn-link">Back to companies</a>
+    </div>
+</div>
+
+<dl class="row" style="max-width: 720px">
+    <dt class="col-sm-3">Industry</dt>
+    <dd class="col-sm-9">{{ company.industry or '–' }}</dd>
+    <dt class="col-sm-3">Website</dt>
+    <dd class="col-sm-9">{% if company.website %}<a href="{{ company.website }}" target="_blank">{{ company.website }}</a>{% else %}–{% endif %}</dd>
+    <dt class="col-sm-3">Location</dt>
+    <dd class="col-sm-9">{{ company.city or '' }}{% if company.city and company.state %}, {% endif %}{{ company.state or '' }}{% if not company.city and not company.state %}–{% endif %}</dd>
+    <dt class="col-sm-3">Notes</dt>
+    <dd class="col-sm-9">{{ company.notes or '–' }}</dd>
+</dl>
+
+<h2 class="h4 mt-4">Jobs</h2>
+<table class="table table-striped align-middle">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Type</th>
+            <th>Posted</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for j in jobs %}
+        <tr>
+            <td><a href="{{ url_for('job_detail', job_id=j.job_id) }}">{{ j.job_title }}</a></td>
+            <td>{{ j.job_type }}</td>
+            <td>{{ j.date_posted or '' }}</td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="3" class="text-muted">No jobs for this company.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h2 class="h4 mt-4">Contacts</h2>
+<table class="table table-striped align-middle">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Title</th>
+            <th>Email</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for ct in contacts %}
+        <tr>
+            <td><a href="{{ url_for('contact_detail', contact_id=ct.contact_id) }}">{{ ct.contact_name }}</a></td>
+            <td>{{ ct.title or '' }}</td>
+            <td>{% if ct.email %}<a href="mailto:{{ ct.email }}">{{ ct.email }}</a>{% endif %}</td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="3" class="text-muted">No contacts for this company.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
