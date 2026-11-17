@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% set editing = request.endpoint == 'company_edit' %}
+
+{% block title %}{{ 'Edit' if editing else 'Add' }} Company{% endblock %}
+
+{% block content %}
+<h1>{{ 'Edit' if editing else 'Add' }} Company</h1>
+
+<form method="post" class="row g-3" style="max-width: 720px">
+    <div class="col-12">
+        <label class="form-label" for="company_name">Company name *</label>
+        <input class="form-control" id="company_name" name="company_name" required maxlength="100"
+            value="{{ company.company_name or '' }}">
+    </div>
+    <div class="col-md-6">
+        <label class="form-label" for="industry">Industry</label>
+        <input class="form-control" id="industry" name="industry" maxlength="50" value="{{ company.industry or '' }}">
+    </div>
+    <div class="col-md-6">
+        <label class="form-label" for="website">Website</label>
+        <input class="form-control" id="website" name="website" type="url" maxlength="200"
+            value="{{ company.website or '' }}">
+    </div>
+    <div class="col-md-6">
+        <label class="form-label" for="city">City</label>
+        <input class="form-control" id="city" name="city" maxlength="50" value="{{ company.city or '' }}">
+    </div>
+    <div class="col-md-6">
+        <label class="form-label" for="state">State</label>
+        <input class="form-control" id="state" name="state" maxlength="50" value="{{ company.state or '' }}">
+    </div>
+    <div class="col-12">
+        <label class="form-label" for="notes">Notes</label>
+        <textarea class="form-control" id="notes" name="notes" rows="3">{{ company.notes or '' }}</textarea>
+    </div>
+    <div class="col-12">
+        <button class="btn btn-primary">Save</button>
+        <a href="{{ url_for('companies') }}" class="btn btn-link">Cancel</a>
+    </div>
+</form>
+{% endblock %}
