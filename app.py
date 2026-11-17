@@ -535,10 +535,81 @@ def contact_delete(contact_id):
     return redirect(url_for("contacts"))
 
 
+def parse_skills(text):
+    """Split "Python, SQL, Flask" into a list, dropping blanks and case-insensitive duplicates."""
+    skills = []
+    seen = set()
+    for s in (text or "").split(","):
+        s = s.strip()
+        if s and s.lower() not in seen:
+            seen.add(s.lower())
+            skills.append(s)
+    return skills
+
+
+def match_jobs(user_skills, jobs):
+    """Score each job by the share of its required skills the user has.
+
+    Returns (scored, unscored): scored jobs sorted best match first, and jobs
+    with no skills listed, which can't be scored.
+    """
+    # Lowercase the user's skills once so "python" matches "Python".
+    have = {s.lower() for s in user_skills}
+    scored = []
+    unscored = []
+    for job in jobs:
+        required = job["requirements"]
+        # A job with no skills listed would divide by zero, so keep it apart.
+        if not required:
+            unscored.append(job)
+            continue
+        # Exact (not substring) match, so "SQL" does not match "PostgreSQL".
+        # Keep the job's own spelling for display.
+        matched = [s for s in required if s.lower() in have]
+        missing = [s for s in required if s.lower() not in have]
+        # Round halves up (round() would turn 12.5 into 12).
+        percent = int(len(matched) * 100 / len(required) + 0.5)
+        scored.append(
+            {
+                **job,
+                "matched": matched,
+                "missing": missing,
+                "total": len(required),
+                "percent": percent,
+            }
+        )
+    # Best match first, then most skills matched, then title A-Z.
+    scored.sort(
+        key=lambda j: (-j["percent"], -len(j["matched"]), j["job_title"].lower())
+    )
+    unscored.sort(key=lambda j: j["job_title"].lower())
+    return scored, unscored
+
+
 @app.route("/job-match")
 def job_match():
-    # TODO: implement the job-matching algorithm
-    return render_template("job_match.html")
+    # Skills come from the URL (?skills=Python, SQL) so results can be bookmarked.
+    skills_text = request.args.get("skills", "")
+    user_skills = parse_skills(skills_text)
+    # With no skills entered, show only the form.
+    if not user_skills:
+        return render_template(
+            "job_match.html", skills_text=skills_text, user_skills=[]
+        )
+    rows = fetch_all(
+        "SELECT j.job_id, j.job_title, j.job_url, j.requirements, c.company_name FROM jobs j "
+        "JOIN companies c ON j.company_id = c.company_id"
+    )
+    for row in rows:
+        row["requirements"] = load_json(row["requirements"]) or []
+    scored, unscored = match_jobs(user_skills, rows)
+    return render_template(
+        "job_match.html",
+        skills_text=skills_text,
+        user_skills=user_skills,
+        scored=scored,
+        unscored=unscored,
+    )
 
 
 if __name__ == "__main__":

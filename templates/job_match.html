@@ -4,5 +4,66 @@
 
 {% block content %}
 <h1>Job Match</h1>
-{# TODO: show job-matching results #}
+
+<form method="get" class="row g-3 mb-4" style="max-width: 720px">
+    <div class="col-12">
+        <label class="form-label" for="skills">Your skills</label>
+        <input class="form-control" id="skills" name="skills" placeholder="Python, SQL, Flask"
+            value="{{ skills_text }}">
+        <div class="form-text">Separate skills with commas.</div>
+    </div>
+    <div class="col-12">
+        <button class="btn btn-primary">Find Matches</button>
+    </div>
+</form>
+
+{% if not user_skills %}
+<p class="text-muted">Enter your skills to see how well you match each job.</p>
+{% else %}
+<p><strong>Your skills:</strong> {{ user_skills|join(', ') }}</p>
+
+<table class="table table-striped align-middle">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Job</th>
+            <th>Company</th>
+            <th>Match</th>
+            <th>Matched skills</th>
+            <th>Missing skills</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for j in scored %}
+        {% set color = 'success' if j.percent == 100 else 'warning' if j.percent >= 50 else 'secondary' %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{% if j.job_url %}<a href="{{ j.job_url }}" target="_blank">{{ j.job_title }}</a>{% else %}{{ j.job_title }}{% endif %}</td>
+            <td>{{ j.company_name }}</td>
+            <td>
+                <span class="badge text-bg-{{ color }}">{{ j.percent }}%</span>
+                <span class="text-muted small">{{ j.matched|length }}/{{ j.total }} skills</span>
+            </td>
+            <td>{{ j.matched|join(', ') }}</td>
+            <td>{{ j.missing|join(', ') }}</td>
+        </tr>
+        {% endfor %}
+        {% for j in unscored %}
+        <tr>
+            <td class="text-muted">–</td>
+            <td>{% if j.job_url %}<a href="{{ j.job_url }}" target="_blank">{{ j.job_title }}</a>{% else %}{{ j.job_title }}{% endif %}</td>
+            <td>{{ j.company_name }}</td>
+            <td><span class="badge text-bg-light">No skills listed</span></td>
+            <td></td>
+            <td></td>
+        </tr>
+        {% endfor %}
+        {% if not scored and not unscored %}
+        <tr>
+            <td colspan="6" class="text-muted">No jobs yet.</td>
+        </tr>
+        {% endif %}
+    </tbody>
+</table>
+{% endif %}
 {% endblock %}

@@ -23,6 +23,8 @@
 
 8. **Dashboard and code review.** I added the dashboard queries from its suggestion to `app.py`, but the indentation broke and the app wouldn't start, so I asked it to fix that. It then walked me through the dashboard template (count cards, applications by status, recent applications), along with matching status colors on the applications page. After that I asked it to review `applications.html`, `dashboard.html`, and `app.py`. It didn't find anything broken, but it pointed out that lists with ties (like two statuses with the same count) don't have a fixed order, that duplicate skills could be saved for a job, that deleting a record that's already gone still says it was deleted, and that the status colors are defined in two templates.
 
+9. **Job Match.** The project spec asks us to use GenAI to help write the job-matching algorithm, so I wrote a prompt asking it to "list every job ranked by the percentage of that job's required skills I have, along with the skills I'm missing." It wrote a `match_jobs()` function in `app.py` that compares my skills to each job's skills ignoring case, works out the match percentage, and sorts the jobs best match first, with jobs that have no skills listed at the end. It also filled in `job_match.html` with a skills form and a results table showing each job's match, matched skills, and missing skills. It tested the function with the example from the spec and checked the page against my database.
+
 ## What Worked Well
 
 - Reviews caught bugs I didn't see, like the `WHERE id` mistake and the typo that left a column blank.
