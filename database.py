@@ -1,4 +1,5 @@
 """Database connection helper."""
+
 import os
 
 import mysql.connector
@@ -21,11 +22,12 @@ def get_connection():
         database=os.getenv("DB_NAME"),
     )
 
+
 def fetch_all(sql, params=()):
     """Fetch all rows from the database for a given query.
 
     Args:
-        query (str): The SQL query to execute.
+        sql (str): The SQL query to execute.
         params (tuple, optional): Parameters to pass to the query."""
     conn = get_connection()
     try:
@@ -35,20 +37,22 @@ def fetch_all(sql, params=()):
     finally:
         conn.close()
 
+
 def fetch_one(sql, params=()):
     """Fetch a single row from the database for a given query.
 
     Args:
-        query (str): The SQL query to execute.
+        sql (str): The SQL query to execute.
         params (tuple, optional): Parameters to pass to the query."""
     rows = fetch_all(sql, params)
     return rows[0] if rows else None
+
 
 def execute(sql, params=()):
     """Execute a query that modifies the database (INSERT, UPDATE, DELETE).
 
     Args:
-        query (str): The SQL query to execute.
+        sql (str): The SQL query to execute.
         params (tuple, optional): Parameters to pass to the query."""
     conn = get_connection()
     try:
