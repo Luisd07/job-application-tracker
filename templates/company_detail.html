@@ -7,6 +7,10 @@
     <h1>{{ company.company_name }}</h1>
     <div>
         <a href="{{ url_for('company_edit', company_id=company.company_id) }}" class="btn btn-outline-secondary">Edit</a>
+        <form method="post" action="{{ url_for('company_delete', company_id=company.company_id) }}" class="d-inline"
+              onsubmit="return confirm('Delete this company and all its jobs, applications, and contacts?');">
+            <button class="btn btn-outline-danger">Delete</button>
+        </form>
         <a href="{{ url_for('companies') }}" class="btn btn-link">Back to companies</a>
     </div>
 </div>

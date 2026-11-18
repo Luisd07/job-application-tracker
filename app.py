@@ -266,14 +266,7 @@ def job_form_values(r):
         errors.append("Date posted must be a valid date.")
         date_posted = None
     # Skills are typed as "Python, SQL, Flask" and stored as a JSON array.
-    # Duplicates are dropped ignoring case, keeping the first spelling typed.
-    skills = []
-    seen = set()
-    for s in (r.get("requirements") or "").split(","):
-        s = s.strip()
-        if s and s.lower() not in seen:
-            seen.add(s.lower())
-            skills.append(s)
+    skills = parse_skills(r.get("requirements"))
     params = (
         company_id,
         job_title,

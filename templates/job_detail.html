@@ -10,6 +10,10 @@
     <h1>{{ job.job_title }}</h1>
     <div>
         <a href="{{ url_for('job_edit', job_id=job.job_id) }}" class="btn btn-outline-secondary">Edit</a>
+        <form method="post" action="{{ url_for('job_delete', job_id=job.job_id) }}" class="d-inline"
+              onsubmit="return confirm('Delete this job and its applications?');">
+            <button class="btn btn-outline-danger">Delete</button>
+        </form>
         <a href="{{ url_for('jobs') }}" class="btn btn-link">Back to jobs</a>
     </div>
 </div>

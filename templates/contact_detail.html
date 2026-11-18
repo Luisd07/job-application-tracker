@@ -7,6 +7,10 @@
     <h1>{{ contact.contact_name }}</h1>
     <div>
         <a href="{{ url_for('contact_edit', contact_id=contact.contact_id) }}" class="btn btn-outline-secondary">Edit</a>
+        <form method="post" action="{{ url_for('contact_delete', contact_id=contact.contact_id) }}" class="d-inline"
+              onsubmit="return confirm('Delete this contact?');">
+            <button class="btn btn-outline-danger">Delete</button>
+        </form>
         <a href="{{ url_for('contacts') }}" class="btn btn-link">Back to contacts</a>
     </div>
 </div>
