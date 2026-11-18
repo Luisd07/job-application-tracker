@@ -52,16 +52,13 @@ Pages:
 
    Keep `DB_NAME=job_tracker`, since that is the database `schema.sql` creates. `SECRET_KEY` can be any random string; Flask needs it for flash messages.
 
-4. Create the database and tables, then load the sample data:
+4. Create the database and tables:
 
    ```bash
    mysql -u your_mysql_user -p < schema.sql
-   mysql -u your_mysql_user -p job_tracker < seed.sql
    ```
 
    **Warning:** `schema.sql` drops and recreates the `companies`, `jobs`, `applications` and `contacts` tables, so running it again deletes everything in `job_tracker`.
-
-   `seed.sql` needs the tables from `schema.sql`, so run it second. It adds 6 companies, 18 jobs, 6 applications and 6 contacts.
 
 5. Start the app:
 
@@ -78,7 +75,6 @@ job-application-tracker/
 ├── app.py              # Flask routes: dashboard, CRUD for each table, job match
 ├── database.py         # MySQL connection and query helpers
 ├── schema.sql          # Creates the job_tracker database and its 4 tables
-├── seed.sql            # Sample data (run after schema.sql)
 ├── requirements.txt    # pip dependencies
 ├── pyproject.toml      # Project metadata and dependencies for uv
 ├── .env.example        # Template for the .env settings file

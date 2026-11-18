@@ -1,1 +1,38 @@
 /* Custom styles for the Job Application Tracker. Bootstrap handles the basics. */
+
+body {
+  background-color: #f4f4f2;
+}
+
+/* Tables sit on white so they stand out from the page background. */
+.table {
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+}
+
+.table thead th {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #6c757d;
+}
+
+/* Dashboard count cards */
+.stat-card {
+  border-color: #dee2e6;
+  color: inherit;
+}
+
+.stat-card:hover {
+  border-color: #212529;
+}
+
+/* Job Match: the bar under each match percentage */
+.match-cell {
+  min-width: 140px;
+}
+
+.match-cell .progress {
+  height: 6px;
+  border-radius: 0;
+}

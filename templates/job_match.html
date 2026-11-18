@@ -35,17 +35,20 @@
     </thead>
     <tbody>
         {% for j in scored %}
-        {% set color = 'success' if j.percent == 100 else 'warning' if j.percent >= 50 else 'secondary' %}
+        {% set color = 'success' if j.percent >= 75 else 'warning' if j.percent >= 40 else 'danger' %}
         <tr>
             <td>{{ loop.index }}</td>
             <td>{% if j.job_url %}<a href="{{ j.job_url }}" target="_blank">{{ j.job_title }}</a>{% else %}{{ j.job_title }}{% endif %}</td>
             <td>{{ j.company_name }}</td>
-            <td>
-                <span class="badge text-bg-{{ color }}">{{ j.percent }}%</span>
-                <span class="text-muted small">{{ j.matched|length }}/{{ j.total }} skills</span>
+            <td class="match-cell">
+                {{ j.percent }}% <span class="text-muted small">({{ j.matched|length }}/{{ j.total }})</span>
+                <div class="progress mt-1" role="progressbar" aria-label="Match" aria-valuenow="{{ j.percent }}"
+                    aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress-bar bg-{{ color }}" style="width: {{ j.percent }}%"></div>
+                </div>
             </td>
             <td>{{ j.matched|join(', ') }}</td>
-            <td>{{ j.missing|join(', ') }}</td>
+            <td class="text-danger">{{ j.missing|join(', ') }}</td>
         </tr>
         {% endfor %}
         {% for j in unscored %}
